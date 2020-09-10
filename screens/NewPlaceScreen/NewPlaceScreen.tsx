@@ -7,6 +7,7 @@ import { View, Text, StyleSheet, TextInput, ScrollView, Button, Keyboard } from 
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { COLORS } from '../../constants/colors';
 import * as PlacesActions from '../../store/places/places.actions';
+import ImagePicker from '../../components/ImagePicker/ImagePicker';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -18,11 +19,16 @@ type NewPlaceScreenProps = {
 const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const [title, setTitle] = useState('');
+    const [imageUri, setImageUri] = useState('');
     const dispatch: Dispatch<Action> = useDispatch();
 
     const onInputValueChange = (text: string) => {
         setTitle(text);
     };
+
+    const onImageTaken = (imageUri: string) => {
+        setImageUri(imageUri);
+    }
 
     const onSave = () => {
         Keyboard.dismiss();
@@ -30,7 +36,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
             {
                 id: new Date().toString(),
                 title: title,
-                image: '',
+                imageUri: imageUri,
                 address: ''
             }
         ));
@@ -45,6 +51,9 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                            value={ title }
                            onChangeText={ onInputValueChange }
                 />
+                <View style={ styles.imagePickerContainer }>
+                    <ImagePicker onImageTaken={ onImageTaken }/>
+                </View>
                 <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
             </View>
         </ScrollView>
@@ -65,6 +74,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingVertical: 4,
         paddingHorizontal: 2
+    },
+    imagePickerContainer: {
+        margin: 15
     }
 });
 

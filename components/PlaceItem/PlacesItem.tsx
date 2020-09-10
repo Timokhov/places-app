@@ -12,7 +12,7 @@ const PlacesItem = (props: PlacesItemProps) => {
     return (
         <TouchableNativeFeedback onPress={ () => props.onSelect(props.place) }>
             <View style={ styles.placeItem }>
-                <Image style={ styles.image } source={{ uri: props.place.image }}/>
+                <Image style={ styles.image } source={{ uri: props.place.imageUri }}/>
                 <View style={ styles.details }>
                     <Text style={ styles.title }>{ props.place.title }</Text>
                     <Text style={ styles.address }>{ props.place.address }</Text>
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: COLORS.primary,
         borderColor: COLORS.primary
     },
     details: {
