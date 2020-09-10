@@ -7,6 +7,7 @@ import MapScreen, { mapScreenNavigationOptions } from '../screens/MapScreen/MapS
 import NewPlaceScreen, { newPlaceScreenNavigationOptions } from '../screens/NewPlaceScreen/NewPlaceScreen';
 import PlaceDetailsScreen, { placeDetailsScreenNavigationOptions } from '../screens/PlaceDetailsScreen/PlaceDetailsScreen';
 import PlacesListScreen, { placesListScreenNavigationOptions } from '../screens/PlacesListScreen/PlacesListScreen';
+import { Place } from '../models/Place';
 
 const defaultNavOptions: StackNavigationOptions = {
     headerStyle: {
@@ -18,7 +19,7 @@ const defaultNavOptions: StackNavigationOptions = {
 
 export type PlacesNavigatorParams = {
     PlacesList: undefined,
-    PlaceDetails: undefined,
+    PlaceDetails: { place: Place },
     NewPlace: undefined,
     Map: undefined
 };

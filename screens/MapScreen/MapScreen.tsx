@@ -4,8 +4,8 @@ import { RouteProp } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 
-type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlaceDetails'>;
-type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlaceDetails'>;
+type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'Map'>;
+type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'Map'>;
 type MapScreenProps = {
     navigation: MapScreenStackNavigationProp,
     route: MapScreenRouteProp

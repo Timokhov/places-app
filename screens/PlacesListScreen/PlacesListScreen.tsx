@@ -1,10 +1,14 @@
 import React from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
+import { useSelector } from 'react-redux';
+import { Place } from '../../models/Place';
+import { RootState } from '../../store/store';
+import PlacesItem from '../../components/PlaceItem/PlacesItem';
 
 type PlacesListScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlacesList'>;
 type PlacesListScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlacesList'>;
@@ -14,19 +18,26 @@ type PlacesListScreenProps = {
 };
 
 const PlacesListScreen = (props: PlacesListScreenProps) => {
+
+    const places: Place[] = useSelector(
+        (state: RootState) => state.placesState.places
+    );
+
+    const onPlaceSelect = (place: Place) => {
+        props.navigation.navigate('PlaceDetails', { place: place });
+    }
+
+    const renderPlace = (itemInfo: ListRenderItemInfo<Place>) => {
+        return <PlacesItem place={ itemInfo.item } onSelect={ onPlaceSelect }/>;
+    };
+
     return (
-        <View style={ styles.screen }>
-            <Text>PlacesListScreen</Text>
-        </View>
+        <FlatList data={ places } renderItem={ renderPlace }/>
     );
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+
 });
 
 export const placesListScreenNavigationOptions = (props: PlacesListScreenProps) => {

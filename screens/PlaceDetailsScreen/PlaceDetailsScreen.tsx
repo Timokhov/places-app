@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 
 export const placeDetailsScreenNavigationOptions = (props: PlaceDetailsScreenProps) => {
     return {
-        headerTitle: 'Place Details'
+        headerTitle: props.route.params.place.title
     } as StackNavigationOptions;
 };
 
