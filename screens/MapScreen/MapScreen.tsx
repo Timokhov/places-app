@@ -1,7 +1,17 @@
 import React from 'react';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
+import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 
-const MapScreen = () => {
+type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlaceDetails'>;
+type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlaceDetails'>;
+type MapScreenProps = {
+    navigation: MapScreenStackNavigationProp,
+    route: MapScreenRouteProp
+};
+
+const MapScreen = (props: MapScreenProps) => {
     return (
         <View style={ styles.screen }>
             <Text>MapScreen</Text>
@@ -16,5 +26,11 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+export const mapScreenNavigationOptions = (props: MapScreenProps) => {
+    return {
+        headerTitle: 'Map'
+    } as StackNavigationOptions;
+};
 
 export default MapScreen;

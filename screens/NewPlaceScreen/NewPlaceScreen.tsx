@@ -1,9 +1,17 @@
 import React from 'react';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
-import { NavigationStackOptions } from 'react-navigation-stack';
-import { NavigationStackScreenProps } from 'react-navigation-stack/lib/typescript/src/types';
+import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 
-const NewPlaceScreen = () => {
+type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
+type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
+type NewPlaceScreenProps = {
+    navigation: NewPlaceScreenStackNavigationProp,
+    route: NewPlaceScreenRouteProp
+};
+
+const NewPlaceScreen = (props: NewPlaceScreenProps) => {
     return (
         <View style={ styles.screen }>
             <Text>NewPlaceScreen</Text>
@@ -19,10 +27,10 @@ const styles = StyleSheet.create({
     }
 });
 
-NewPlaceScreen.navigationOptions = (props: NavigationStackScreenProps) => {
+export const newPlaceScreenNavigationOptions = (props: NewPlaceScreenProps) => {
     return {
         headerTitle: 'New Place'
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default NewPlaceScreen;

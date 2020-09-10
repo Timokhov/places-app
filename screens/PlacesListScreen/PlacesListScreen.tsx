@@ -1,11 +1,19 @@
 import React from 'react';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
+import { RouteProp } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
-import { NavigationStackOptions } from 'react-navigation-stack';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { NavigationStackScreenProps } from 'react-navigation-stack/lib/typescript/src/types';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
+import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 
-const PlacesListScreen = () => {
+type PlacesListScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlacesList'>;
+type PlacesListScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlacesList'>;
+type PlacesListScreenProps = {
+    navigation: PlacesListScreenStackNavigationProp,
+    route: PlacesListScreenRouteProp
+};
+
+const PlacesListScreen = (props: PlacesListScreenProps) => {
     return (
         <View style={ styles.screen }>
             <Text>PlacesListScreen</Text>
@@ -21,7 +29,7 @@ const styles = StyleSheet.create({
     }
 });
 
-PlacesListScreen.navigationOptions = (props: NavigationStackScreenProps) => {
+export const placesListScreenNavigationOptions = (props: PlacesListScreenProps) => {
     return {
         headerTitle: 'All Places',
         headerRight: () => {
@@ -34,7 +42,7 @@ PlacesListScreen.navigationOptions = (props: NavigationStackScreenProps) => {
                 </HeaderButtons>
             );
         }
-    } as NavigationStackOptions;
+    } as StackNavigationOptions;
 };
 
 export default PlacesListScreen;
