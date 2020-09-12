@@ -26,7 +26,7 @@ const ImagePicker = (props: ImagePickerProps) => {
         }
 
         return true;
-    }
+    };
 
     const onTakeImage = async () => {
         const hasCameraPermission: boolean = await verifyCameraPermissions();
@@ -41,7 +41,7 @@ const ImagePicker = (props: ImagePickerProps) => {
                 props.onImageTaken(imageResult.uri);
             }
         }
-    }
+    };
 
     return (
         <View style={ styles.imagePicker }>

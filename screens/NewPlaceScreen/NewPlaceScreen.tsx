@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Action, Dispatch } from 'redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
-import { View, Text, StyleSheet, TextInput, ScrollView, Button, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, Button, Keyboard, Alert } from 'react-native';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { COLORS } from '../../constants/colors';
 import * as PlacesActions from '../../store/places/places.actions';
 import ImagePicker from '../../components/ImagePicker/ImagePicker';
+import { RootState } from '../../store/store';
+import ScreenLoader from '../../components/UI/ScreenLoader/ScreenLoader';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -21,6 +23,18 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
     const [title, setTitle] = useState('');
     const [imageUri, setImageUri] = useState('');
     const dispatch: Dispatch<Action> = useDispatch();
+    const addPlaceInProgress: boolean = useSelector(
+        (state: RootState) => state.placesState.addPlaceState.inProgress
+    );
+    const addPlaceError: string = useSelector(
+        (state: RootState) => state.placesState.addPlaceState.error
+    );
+
+    useEffect(() => {
+        if (addPlaceError) {
+            Alert.alert('Error!', addPlaceError, [{ text: 'Okay' }]);
+        }
+    }, [addPlaceError])
 
     const onInputValueChange = (text: string) => {
         setTitle(text);
@@ -28,36 +42,42 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const onImageTaken = (imageUri: string) => {
         setImageUri(imageUri);
-    }
+    };
 
     const onSave = () => {
         Keyboard.dismiss();
         dispatch(PlacesActions.addPlace(
             {
-                id: new Date().toString(),
+                id: 0,
                 title: title,
                 imageUri: imageUri,
-                address: ''
+                address: 'Address',
+                lat: 15.6,
+                lng: 14.7
             }
         ));
         props.navigation.goBack();
     };
 
-    return (
-        <ScrollView keyboardShouldPersistTaps="handled">
-            <View style={ styles.form }>
-                <Text style={ styles.title }>Title</Text>
-                <TextInput style={ styles.textInput }
-                           value={ title }
-                           onChangeText={ onInputValueChange }
-                />
-                <View style={ styles.imagePickerContainer }>
-                    <ImagePicker onImageTaken={ onImageTaken }/>
+    if (addPlaceInProgress) {
+        return <ScreenLoader/>
+    } else {
+        return (
+            <ScrollView keyboardShouldPersistTaps="handled">
+                <View style={ styles.form }>
+                    <Text style={ styles.title }>Title</Text>
+                    <TextInput style={ styles.textInput }
+                               value={ title }
+                               onChangeText={ onInputValueChange }
+                    />
+                    <View style={ styles.imagePickerContainer }>
+                        <ImagePicker onImageTaken={ onImageTaken }/>
+                    </View>
+                    <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
                 </View>
-                <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
-            </View>
-        </ScrollView>
-    );
+            </ScrollView>
+        );
+    }
 };
 
 const styles = StyleSheet.create({

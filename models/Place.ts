@@ -1,6 +1,8 @@
 export interface Place {
-    id: string,
+    id: number,
     title: string,
     imageUri: string,
-    address: string
+    address: string,
+    lat: number,
+    lng: number
 }
