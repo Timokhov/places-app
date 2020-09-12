@@ -10,6 +10,7 @@ import * as PlacesActions from '../../store/places/places.actions';
 import ImagePicker from '../../components/ImagePicker/ImagePicker';
 import { RootState } from '../../store/store';
 import ScreenLoader from '../../components/UI/ScreenLoader/ScreenLoader';
+import LocationPicker from '../../components/LocationPicker/LocationPicker';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -52,8 +53,10 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                 title: title,
                 imageUri: imageUri,
                 address: 'Address',
-                lat: 15.6,
-                lng: 14.7
+                location: {
+                   latitude: 1.555,
+                   longitude: 2.45
+                }
             }
         ));
         props.navigation.goBack();
@@ -70,8 +73,11 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                                value={ title }
                                onChangeText={ onInputValueChange }
                     />
-                    <View style={ styles.imagePickerContainer }>
+                    <View style={ styles.detailContainer }>
                         <ImagePicker onImageTaken={ onImageTaken }/>
+                    </View>
+                    <View style={ styles.detailContainer }>
+                        <LocationPicker/>
                     </View>
                     <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
                 </View>
@@ -95,7 +101,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 2
     },
-    imagePickerContainer: {
+    detailContainer: {
         margin: 15
     }
 });

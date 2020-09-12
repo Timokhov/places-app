@@ -9,7 +9,7 @@ import * as DatabaseService from './services/database.service';
 
 const App = () => {
 
-    const [isAppInitialized, setAppInitialized] = useState(false);
+    const [isAppInitialized, setAppInitialized] = useState<boolean>(false);
 
     if (!isAppInitialized) {
         return <AppLoading startAsync={ DatabaseService.init } onFinish={ () => setAppInitialized(true) }/>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Button, Image, Text, Alert } from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { ImagePickerResult } from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
+import * as ExpoPermissions from 'expo-permissions';
 import { PermissionResponse, PermissionStatus } from 'expo-permissions/src/Permissions.types';
 import { COLORS } from '../../constants/colors';
 
@@ -12,10 +12,10 @@ interface ImagePickerProps {
 
 const ImagePicker = (props: ImagePickerProps) => {
 
-    const [imageUri, setImageUri] = useState('');
+    const [imageUri, setImageUri] = useState<string>('');
 
     const verifyCameraPermissions = async () => {
-        const result: PermissionResponse = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
+        const result: PermissionResponse = await ExpoPermissions.askAsync(ExpoPermissions.CAMERA, ExpoPermissions.CAMERA_ROLL);
         if (result.status !== PermissionStatus.GRANTED) {
             Alert.alert(
                 'Insufficient permissions!',
