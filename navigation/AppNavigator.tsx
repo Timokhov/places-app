@@ -8,6 +8,7 @@ import NewPlaceScreen, { newPlaceScreenNavigationOptions } from '../screens/NewP
 import PlaceDetailsScreen, { placeDetailsScreenNavigationOptions } from '../screens/PlaceDetailsScreen/PlaceDetailsScreen';
 import PlacesListScreen, { placesListScreenNavigationOptions } from '../screens/PlacesListScreen/PlacesListScreen';
 import { Place } from '../models/Place';
+import { Location } from '../models/Location';
 
 const defaultNavOptions: StackNavigationOptions = {
     headerStyle: {
@@ -20,7 +21,7 @@ const defaultNavOptions: StackNavigationOptions = {
 export type PlacesNavigatorParams = {
     PlacesList: undefined,
     PlaceDetails: { place: Place },
-    NewPlace: undefined,
+    NewPlace: { locationFromMap?: Location },
     Map: undefined
 };
 const PlacesStackNavigator = createStackNavigator<PlacesNavigatorParams>();

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Alert, Button, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Alert, Button } from 'react-native';
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { COLORS } from '../../constants/colors';
 import * as ExpoLocation from 'expo-location';
 import * as ExpoPermissions from 'expo-permissions';
@@ -9,13 +10,26 @@ import { Location } from '../../models/Location';
 import MapPreview from './MapPreview/MapPreview';
 
 interface LocationPickerProps {
-
+    onLocationSelected: (location: Location) => void,
+    locationFromMap?: Location
 }
 
 const LocationPicker = (props: LocationPickerProps) => {
 
     const [location, setLocation] = useState<Location>();
     const [showLoader, setShowLoader] = useState(false);
+
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+
+    useEffect(() => {
+        setLocation(props.locationFromMap);
+    }, [props.locationFromMap]);
+
+    useEffect(() => {
+        if (location) {
+            props.onLocationSelected(location);
+        }
+    }, [location]);
 
     const verifyLocationPermissions = async () => {
         const result: PermissionResponse = await ExpoPermissions.askAsync(ExpoPermissions.LOCATION);
@@ -50,14 +64,21 @@ const LocationPicker = (props: LocationPickerProps) => {
             }
         }
         setShowLoader(false);
-    }
+    };
 
-        return (
+    const onPickOnMap = () => {
+        navigation.navigate('Map');
+    };
+
+    return (
         <View style={ styles.locationPicker }>
             <View style={ styles.mapPreviewContainer }>
-                <MapPreview location={ location } showLoader={ showLoader }/>
+                <MapPreview location={ location } showLoader={ showLoader } onPress={ onPickOnMap }/>
             </View>
-            <Button title="Get My Location" onPress={ onGetMyLocation } color={ COLORS.primary }/>
+            <View style={ styles.actions }>
+                <Button title="Get My Location" onPress={ onGetMyLocation } color={ COLORS.primary }/>
+                <Button title="Pick on Map" onPress={ onPickOnMap } color={ COLORS.primary }/>
+            </View>
         </View>
     );
 };
@@ -68,6 +89,11 @@ const styles = StyleSheet.create({
     },
     mapPreviewContainer: {
         marginBottom: 20,
+        width: '100%'
+    },
+    actions: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         width: '100%'
     }
 });

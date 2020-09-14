@@ -11,6 +11,7 @@ import ImagePicker from '../../components/ImagePicker/ImagePicker';
 import { RootState } from '../../store/store';
 import ScreenLoader from '../../components/UI/ScreenLoader/ScreenLoader';
 import LocationPicker from '../../components/LocationPicker/LocationPicker';
+import { Location } from '../../models/Location';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -23,6 +24,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const [title, setTitle] = useState('');
     const [imageUri, setImageUri] = useState('');
+    const [location, setLocation] = useState<Location>();
     const dispatch: Dispatch<Action> = useDispatch();
     const addPlaceInProgress: boolean = useSelector(
         (state: RootState) => state.placesState.addPlaceState.inProgress
@@ -35,7 +37,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
         if (addPlaceError) {
             Alert.alert('Error!', addPlaceError, [{ text: 'Okay' }]);
         }
-    }, [addPlaceError])
+    }, [addPlaceError]);
 
     const onInputValueChange = (text: string) => {
         setTitle(text);
@@ -45,21 +47,24 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
         setImageUri(imageUri);
     };
 
+    const onLocationSelected = (location: Location) => {
+        setLocation(location);
+    };
+
     const onSave = () => {
-        Keyboard.dismiss();
-        dispatch(PlacesActions.addPlace(
-            {
-                id: 0,
-                title: title,
-                imageUri: imageUri,
-                address: 'Address',
-                location: {
-                   latitude: 1.555,
-                   longitude: 2.45
+        if (location) {
+            Keyboard.dismiss();
+            dispatch(PlacesActions.addPlace(
+                {
+                    id: 0,
+                    title: title,
+                    imageUri: imageUri,
+                    address: 'Address',
+                    location: location
                 }
-            }
-        ));
-        props.navigation.goBack();
+            ));
+            props.navigation.navigate('PlacesList');
+        }
     };
 
     if (addPlaceInProgress) {
@@ -77,7 +82,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                         <ImagePicker onImageTaken={ onImageTaken }/>
                     </View>
                     <View style={ styles.detailContainer }>
-                        <LocationPicker/>
+                        <LocationPicker onLocationSelected={ onLocationSelected } locationFromMap={ props.route.params?.locationFromMap }/>
                     </View>
                     <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
                 </View>

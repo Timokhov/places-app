@@ -44,7 +44,7 @@ export const fetchPlaces = (): Promise<SQLResultSet> => {
             }
         );
     }));
-}
+};
 
 export const insertPlace = (place: Place): Promise<SQLResultSet> => {
     return new Promise(((resolve, reject) => {
@@ -52,7 +52,7 @@ export const insertPlace = (place: Place): Promise<SQLResultSet> => {
             (transaction: SQLTransaction) => {
                 transaction.executeSql(
                     'INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);',
-                    [place.title, place.imageUri, place.address, place.lat, place.lng],
+                    [place.title, place.imageUri, place.address, place.location.latitude, place.location.longitude],
                     (transaction: SQLTransaction, resultSet: SQLResultSet) => {
                         resolve(resultSet);
                     },

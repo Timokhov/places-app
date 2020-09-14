@@ -44,15 +44,15 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
 
     const onRefresh = () => {
         dispatch(PlacesActions.fetchPlaces());
-    }
+    };
 
     const onAddNewPlace = () => {
-        props.navigation.navigate('NewPlace');
-    }
+        props.navigation.navigate('Map');
+    };
 
     const onPlaceSelect = (place: Place) => {
         props.navigation.navigate('PlaceDetails', { place: place });
-    }
+    };
 
     const renderPlace = (itemInfo: ListRenderItemInfo<Place>) => {
         return <PlacesItem place={ itemInfo.item } onSelect={ onPlaceSelect }/>;
@@ -88,7 +88,7 @@ export const placesListScreenNavigationOptions = (props: PlacesListScreenProps) 
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Add Place'
                           iconName='ios-add'
-                          onPress={ () => props.navigation.navigate('NewPlace') }
+                          onPress={ () => props.navigation.navigate('Map') }
                     />
                 </HeaderButtons>
             );

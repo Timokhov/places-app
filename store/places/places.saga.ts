@@ -1,5 +1,6 @@
 import { SQLResultSet } from 'expo-sqlite/src/SQLite.types';
 import { put, takeEvery } from 'redux-saga/effects';
+import { Location } from '../../models/Location';
 import { Place } from '../../models/Place';
 import { AddPlaceAction, PlacesActionType } from './places.actions';
 import * as FileSystem from 'expo-file-system';
@@ -17,7 +18,16 @@ function* fetchPlacesSaga() {
         const result: SQLResultSet = yield DatabaseService.fetchPlaces();
         const places: Place[] = [];
         for (let i = 0; i < result.rows.length; i++) {
-            places.push(result.rows.item(i));
+            places.push({
+                id: result.rows.item(i).id,
+                title: result.rows.item(i).title,
+                imageUri: result.rows.item(i).imageUri,
+                address: result.rows.item(i).address,
+                location: {
+                    latitude: result.rows.item(i).lat,
+                    longitude: result.rows.item(i).lng
+                }
+            });
         }
         yield put(PlacesActions.fetchPlacesSuccess(places));
     } catch (error) {
