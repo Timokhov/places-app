@@ -22,7 +22,7 @@ export type PlacesNavigatorParams = {
     PlacesList: undefined,
     PlaceDetails: { place: Place },
     NewPlace: { locationFromMap?: Location },
-    Map: undefined
+    Map: { readonly?: boolean, initialLocation?: Location } | undefined
 };
 const PlacesStackNavigator = createStackNavigator<PlacesNavigatorParams>();
 const PlacesNavigator = () => {

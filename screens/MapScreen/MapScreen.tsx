@@ -7,6 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { Location } from '../../models/Location';
+import { Nullable } from '../../models/nullable';
 
 type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'Map'>;
 type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'Map'>;
@@ -17,14 +18,17 @@ type MapScreenProps = {
 
 const MapScreen = (props: MapScreenProps) => {
 
-    const [location, setLocation] = useState<Location>();
+    const initialLocation: Nullable<Location> = props.route.params?.initialLocation;
+    const readonly: Nullable<boolean> = props.route.params?.readonly;
+
+    const [location, setLocation] = useState<Nullable<Location>>(initialLocation);
 
     const onSave = useCallback(() => {
         props.navigation.navigate('NewPlace', { locationFromMap: location });
     }, [location]);
 
     useEffect(() => {
-        if (location) {
+        if (!readonly && location) {
             props.navigation.setOptions({
                 headerRight: () => {
                     return (
@@ -38,16 +42,20 @@ const MapScreen = (props: MapScreenProps) => {
                 }
             });
         }
-    }, [onSave]);
+    }, [onSave, readonly]);
 
     const mapRegion: Region = {
-        latitude: 37.5,
-        longitude: -122.43,
+        latitude: initialLocation ? initialLocation.latitude : 37.5,
+        longitude: initialLocation ? initialLocation.longitude : -122.43,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     };
 
     const onSelectLocation = (event: MapEvent) => {
+        if (readonly) {
+            return;
+        }
+
         setLocation({
             latitude: event.nativeEvent.coordinate.latitude,
             longitude: event.nativeEvent.coordinate.longitude

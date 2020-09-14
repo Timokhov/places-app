@@ -1,11 +1,12 @@
 import React from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableNativeFeedback, View, ViewStyle } from 'react-native';
 import { Location } from '../../../models/Location';
 import { ENV } from '../../../env';
 import { COLORS } from '../../../constants/colors';
 
 interface MapPreviewProps {
     location?: Location,
+    style?: ViewStyle,
     showLoader?: boolean,
     onPress?: () => void
 }
@@ -16,7 +17,7 @@ const MapPreview = (props: MapPreviewProps) => {
 
     return (
         <TouchableNativeFeedback onPress={ () => props.onPress && props.onPress() }>
-            <View style={ styles.mapPreview }>
+            <View style={{ ...styles.mapPreview, ...props.style }}>
                 {
                     props.showLoader
                         ? <ActivityIndicator size="large" color={ COLORS.primary }/>

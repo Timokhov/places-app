@@ -7,6 +7,7 @@ import * as PlacesActions from './places.actions';
 import * as DatabaseService from '../../services/database.service';
 import * as GoogleService from '../../services/google.service';
 import { GoogleGeocodeResponse } from '../../models/google';
+import { Nullable } from '../../models/nullable';
 
 export function* watchPlacesSaga() {
     yield takeEvery(PlacesActionType.FETCH_PLACES, fetchPlacesSaga);
@@ -39,7 +40,7 @@ function* fetchPlacesSaga() {
 
 function* addPlaceSaga(action: AddPlaceAction) {
     yield put(PlacesActions.addPlaceStart());
-    const fileName: string | undefined = action.imageUri.split('/').pop();
+    const fileName: Nullable<string> = action.imageUri.split('/').pop();
     if (fileName) {
         const newPath: string = FileSystem.documentDirectory + fileName;
         try {
@@ -51,7 +52,7 @@ function* addPlaceSaga(action: AddPlaceAction) {
             const place: Place = {
                 id: 0,
                 title: action.title,
-                imageUri: action.imageUri,
+                imageUri: newPath,
                 address: geocodeResponse.results[0].formatted_address,
                 location: action.location
             };
