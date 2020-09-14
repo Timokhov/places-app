@@ -54,15 +54,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
     const onSave = () => {
         if (location) {
             Keyboard.dismiss();
-            dispatch(PlacesActions.addPlace(
-                {
-                    id: 0,
-                    title: title,
-                    imageUri: imageUri,
-                    address: 'Address',
-                    location: location
-                }
-            ));
+            dispatch(PlacesActions.addPlace(title, imageUri, location));
             props.navigation.navigate('PlacesList');
         }
     };

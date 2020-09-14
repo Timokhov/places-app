@@ -1,11 +1,12 @@
 import { SQLResultSet } from 'expo-sqlite/src/SQLite.types';
 import { put, takeEvery } from 'redux-saga/effects';
-import { Location } from '../../models/Location';
 import { Place } from '../../models/Place';
 import { AddPlaceAction, PlacesActionType } from './places.actions';
 import * as FileSystem from 'expo-file-system';
 import * as PlacesActions from './places.actions';
 import * as DatabaseService from '../../services/database.service';
+import * as GoogleService from '../../services/google.service';
+import { GoogleGeocodeResponse } from '../../models/google';
 
 export function* watchPlacesSaga() {
     yield takeEvery(PlacesActionType.FETCH_PLACES, fetchPlacesSaga);
@@ -38,18 +39,24 @@ function* fetchPlacesSaga() {
 
 function* addPlaceSaga(action: AddPlaceAction) {
     yield put(PlacesActions.addPlaceStart());
-    const place: Place = { ...action.place };
-    const fileName: string | undefined = place.imageUri.split('/').pop();
+    const fileName: string | undefined = action.imageUri.split('/').pop();
     if (fileName) {
         const newPath: string = FileSystem.documentDirectory + fileName;
         try {
             yield FileSystem.moveAsync({
-                from: action.place.imageUri,
+                from: action.imageUri,
                 to: newPath
             });
-            place.imageUri = newPath;
-            const result: SQLResultSet = yield DatabaseService.insertPlace(place);
-            place.id = result.insertId;
+            const geocodeResponse: GoogleGeocodeResponse = yield GoogleService.geocode(action.location);
+            const place: Place = {
+                id: 0,
+                title: action.title,
+                imageUri: action.imageUri,
+                address: geocodeResponse.results[0].formatted_address,
+                location: action.location
+            };
+            const insertResult: SQLResultSet = yield DatabaseService.insertPlace(place);
+            place.id = insertResult.insertId;
             yield put(PlacesActions.addPlaceSuccess(place));
         } catch (error) {
             console.log(error);

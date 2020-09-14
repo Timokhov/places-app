@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { Place } from '../../models/Place';
+import { Location } from '../../models/Location';
 
 export enum PlacesActionType {
     FETCH_PLACES = 'FETCH_PLACES',
@@ -24,10 +25,14 @@ export interface FetchPlacesFailAction extends PlacesAction {
 }
 
 export interface AddPlaceAction extends PlacesAction {
-    place: Place
+    title: string,
+    imageUri: string,
+    location: Location
 }
 
-export interface AddPlaceSuccessAction extends AddPlaceAction {}
+export interface AddPlaceSuccessAction extends PlacesAction {
+    place: Place
+}
 
 export interface AddPlaceFailAction extends PlacesAction {
     error: string
@@ -59,10 +64,12 @@ export const fetchPlacesFail = (error: string): FetchPlacesFailAction => {
     };
 };
 
-export const addPlace = (place: Place): AddPlaceAction => {
+export const addPlace = (title: string, imageUri: string, location: Location): AddPlaceAction => {
     return {
         type: PlacesActionType.ADD_PLACE,
-        place: place
+        title: title,
+        imageUri: imageUri,
+        location: location
     };
 };
 
