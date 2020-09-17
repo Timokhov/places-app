@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
+import { Button, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { COLORS } from '../../../constants/colors';
+import DefaultText from '../DefaultText/DefaultText';
 
 interface ErrorProps {
     message: string,
@@ -25,7 +26,7 @@ const Error = (props: ErrorProps) => {
     return (
         <ScrollView contentContainerStyle={ styles.error }
                     refreshControl={ refreshControl }>
-            <Text>{ props.message }</Text>
+            <DefaultText>{ props.message }</DefaultText>
             <Button title={ props.button ? props.button.title : 'Reload' }
                     onPress={ props.button ? props.button.action : props.onReload }
                     color={ COLORS.primary }/>

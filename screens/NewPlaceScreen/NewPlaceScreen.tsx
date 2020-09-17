@@ -1,17 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { Action, Dispatch } from 'redux';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
-import { View, Text, StyleSheet, TextInput, ScrollView, Button, Keyboard, Alert } from 'react-native';
-import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
-import { COLORS } from '../../constants/colors';
-import * as PlacesActions from '../../store/places/places.actions';
-import ImagePicker from '../../components/ImagePicker/ImagePicker';
-import { RootState } from '../../store/store';
+import {
+    View,
+    ScrollView,
+    Image,
+    StyleSheet,
+    Button,
+    KeyboardAvoidingView,
+    Alert,
+    TouchableNativeFeedback, Keyboard
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { Action, Dispatch } from 'redux';
+import MapPreview from '../../components/MapPreview/MapPreview';
+import InputControl from '../../components/UI/InputControl/InputControl';
 import ScreenLoader from '../../components/UI/ScreenLoader/ScreenLoader';
-import LocationPicker from '../../components/LocationPicker/LocationPicker';
+import { COLORS } from '../../constants/colors';
+import { useTransactionStateObserver } from '../../hooks/transaction-state-observer.hook';
+import { Nullable } from '../../models/Nullable';
+import { TransactionState } from '../../models/TransactionState';
+import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { Location } from '../../models/Location';
+import { RootState } from '../../store/store';
+import * as NewPlaceActions from '../../store/new-place/new-place.actions';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -22,84 +34,126 @@ type NewPlaceScreenProps = {
 
 const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
-    const [title, setTitle] = useState('');
-    const [imageUri, setImageUri] = useState('');
-    const [location, setLocation] = useState<Location>();
+    const imageUri: string = useSelector(
+        (state: RootState) => state.newPlaceState.imageUri
+    );
+    const location: Nullable<Location> = useSelector(
+        (state: RootState) => state.newPlaceState.location
+    );
+    const name: string = useSelector(
+        (state: RootState) => state.newPlaceState.name
+    );
+    const description: string = useSelector(
+        (state: RootState) => state.newPlaceState.description
+    );
+    const addPlaceState: TransactionState = useSelector(
+        (state: RootState) => state.newPlaceState.addPlaceState
+    );
+
+    const [showLoader, setShowLoader] = useState(false);
+
     const dispatch: Dispatch<Action> = useDispatch();
-    const addPlaceInProgress: boolean = useSelector(
-        (state: RootState) => state.placesState.addPlaceState.inProgress
-    );
-    const addPlaceError: string = useSelector(
-        (state: RootState) => state.placesState.addPlaceState.error
-    );
 
-    useEffect(() => {
-        if (addPlaceError) {
-            Alert.alert('Error!', addPlaceError, [{ text: 'Okay' }]);
+    useTransactionStateObserver(
+        addPlaceState,
+        () => setShowLoader(true),
+        () => setShowLoader(false),
+        (error: string) => {
+            setShowLoader(false);
+            Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
         }
-    }, [addPlaceError]);
+    );
 
-    const onInputValueChange = (text: string) => {
-        setTitle(text);
+    const onChangeImage = () => {
+        Keyboard.dismiss();
+        props.navigation.push('Camera', { navigateTo: 'NewPlace' });
     };
 
-    const onImageTaken = (imageUri: string) => {
-        setImageUri(imageUri);
-    };
-
-    const onLocationSelected = (location: Location) => {
-        setLocation(location);
+    const onChangeLocation = () => {
+        Keyboard.dismiss();
+        props.navigation.push('Map', { readonly: false, initialLocation: location });
     };
 
     const onSave = () => {
-        if (location) {
-            Keyboard.dismiss();
-            dispatch(PlacesActions.addPlace(title, imageUri, location));
-            props.navigation.navigate('PlacesList');
+        Keyboard.dismiss();
+        if (imageUri && location && name && description) {
+            dispatch(NewPlaceActions.addPlace(imageUri, location, name, description));
         }
     };
 
-    if (addPlaceInProgress) {
+    if (showLoader) {
         return <ScreenLoader/>
     } else {
         return (
-            <ScrollView keyboardShouldPersistTaps="handled">
-                <View style={ styles.form }>
-                    <Text style={ styles.title }>Title</Text>
-                    <TextInput style={ styles.textInput }
-                               value={ title }
-                               onChangeText={ onInputValueChange }
+            <KeyboardAvoidingView>
+                <ScrollView contentContainerStyle={ styles.screen } keyboardShouldPersistTaps="handled">
+                    {
+                        !!imageUri && (
+                            <TouchableNativeFeedback onPress={ onChangeImage } useForeground>
+                                <View style={ styles.imageContainer }>
+                                    <Image style={ styles.image } source={{ uri: imageUri }}/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        )
+                    }
+                    <View style={ styles.locationContainer }>
+                        <MapPreview location={ location } onPress={ onChangeLocation }/>
+                    </View>
+                    <View style={ styles.descriptionContainer }>
+                        <InputControl label="Name"
+                                      value={ name }
+                                      onValueChange={ (newValue: string) => dispatch(NewPlaceActions.setName(newValue)) }
+                                      keyboardType="default"
+                                      autoCapitalize="sentences"
+                                      autoCorrect
+                                      returnKeyType="next"
+                        />
+                        <InputControl label="Description"
+                                      value={ description }
+                                      onValueChange={ (newValue: string) => dispatch(NewPlaceActions.setDescription(newValue)) }
+                                      keyboardType="default"
+                                      autoCapitalize="sentences"
+                                      autoCorrect
+                                      returnKeyType="next"
+                        />
+                    </View>
+                    <Button title="Save Place"
+                            onPress={ onSave }
+                            color={ COLORS.primary }
+                            disabled={ !description || !name }
                     />
-                    <View style={ styles.detailContainer }>
-                        <ImagePicker onImageTaken={ onImageTaken }/>
-                    </View>
-                    <View style={ styles.detailContainer }>
-                        <LocationPicker onLocationSelected={ onLocationSelected } locationFromMap={ props.route.params?.locationFromMap }/>
-                    </View>
-                    <Button title="Save" onPress={ onSave } color={ COLORS.primary }/>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
         );
     }
 };
 
 const styles = StyleSheet.create({
-    form: {
-        margin: 30
+    screen: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingBottom: 10
     },
-    title: {
-        fontSize: 18,
-        marginBottom: 15
+    imageContainer: {
+        height: 200,
+        width: '100%',
+        backgroundColor: COLORS.common,
+        marginBottom: 10
     },
-    textInput: {
-        borderBottomColor: COLORS.common,
-        borderBottomWidth: 1,
-        marginBottom: 15,
-        paddingVertical: 4,
-        paddingHorizontal: 2
+    image: {
+        flex: 1
     },
-    detailContainer: {
-        margin: 15
+    locationContainer: {
+        marginVertical: 10,
+        width: '90%',
+        maxWidth: 350,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    descriptionContainer: {
+        width: '90%',
+        marginVertical: 10
     }
 });
 

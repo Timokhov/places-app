@@ -2,8 +2,8 @@ import { Location } from './Location';
 
 export interface Place {
     id: number,
-    title: string,
     imageUri: string,
-    address: string,
-    location: Location
+    location: Location,
+    name: string,
+    description: string
 }

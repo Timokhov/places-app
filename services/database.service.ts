@@ -9,7 +9,7 @@ export const init = (): Promise<void> => {
         db.transaction(
             (transaction: SQLTransaction) => {
                 transaction.executeSql(
-                    'CREATE TABLE IF NOT EXISTS places (id INTEGER PRIMARY KEY NOT NULL, title TEXT NOT NULL, imageUri TEXT NOT NULL, address TEXT NOT NULL, lat REAL NOT NULL , lng REAL NOT NULL);',
+                    'CREATE TABLE IF NOT EXISTS places (id INTEGER PRIMARY KEY NOT NULL, imageUri TEXT NOT NULL, address TEXT NOT NULL, lat REAL NOT NULL , lng REAL NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL);',
                     [],
                     () => {
                         console.log('Database initialized');
@@ -51,8 +51,8 @@ export const insertPlace = (place: Place): Promise<SQLResultSet> => {
         db.transaction(
             (transaction: SQLTransaction) => {
                 transaction.executeSql(
-                    'INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);',
-                    [place.title, place.imageUri, place.address, place.location.latitude, place.location.longitude],
+                    'INSERT INTO places (imageUri, address, lat, lng, name, description) VALUES (?, ?, ?, ?, ?, ?);',
+                    [place.imageUri, place.location.address, place.location.latitude, place.location.longitude, place.name, place.description],
                     (transaction: SQLTransaction, resultSet: SQLResultSet) => {
                         resolve(resultSet);
                     },

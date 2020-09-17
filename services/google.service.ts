@@ -1,9 +1,8 @@
-import { Location } from '../models/Location';
 import { ENV } from '../env';
-import { GoogleGeocodeResponse } from '../models/google';
+import { GoogleGeocodeResponse } from '../models/Google';
 
-export const geocode = async (location: Location): Promise<GoogleGeocodeResponse> => {
-    const response: Response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${ENV.googleApiKey}`);
+export const geocode = async (latitude: number, longitude: number): Promise<GoogleGeocodeResponse> => {
+    const response: Response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${ENV.googleApiKey}`);
     if (!response.ok) {
         throw new Error('Something went wrong');
     }
@@ -13,4 +12,4 @@ export const geocode = async (location: Location): Promise<GoogleGeocodeResponse
     }
 
     return geocodeResponse;
-}
+};

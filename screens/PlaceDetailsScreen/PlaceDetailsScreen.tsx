@@ -1,9 +1,15 @@
 import React from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { RouteProp } from '@react-navigation/native';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    ScrollView,
+    Image
+} from 'react-native';
+import DefaultText from '../../components/UI/DefaultText/DefaultText';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
-import MapPreview from '../../components/LocationPicker/MapPreview/MapPreview';
+import MapPreview from '../../components/MapPreview/MapPreview';
 import { Place } from '../../models/Place';
 import { COLORS } from '../../constants/colors';
 
@@ -24,12 +30,14 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
 
     return (
         <ScrollView contentContainerStyle={ styles.screen }>
-            <Image style={ styles.image } source={{ uri: place.imageUri }}/>
+            <View style={ styles.imageContainer }>
+                <Image style={ styles.image } source={{ uri: place.imageUri }}/>
+            </View>
             <View style={ styles.locationContainer }>
-                <View style={ styles.addressContainer }>
-                    <Text style={ styles.address }>{ place.address }</Text>
-                </View>
                 <MapPreview location={ place.location } onPress={ onShowMap }/>
+            </View>
+            <View style={ styles.descriptionContainer }>
+                <DefaultText style={ styles.description }>{ place.description }</DefaultText>
             </View>
         </ScrollView>
     );
@@ -37,49 +45,42 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start'
+    },
+    imageContainer: {
+        height: 200,
+        width: '100%',
+        backgroundColor: COLORS.common,
+        marginBottom: 10
     },
     image: {
-        height: '35%',
-        minHeight: 300,
         width: '100%',
-        backgroundColor: COLORS.common
+        height: '100%'
     },
     locationContainer: {
-        marginVertical: 20,
+        marginVertical: 10,
         width: '90%',
         maxWidth: 350,
         justifyContent: 'center',
+        alignItems: 'center'
+    },
+    descriptionContainer: {
+        width: '90%',
+        justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: 'black',
-        shadowOpacity: 0.26,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-        elevation: 5,
-        backgroundColor: 'white',
-        borderRadius: 10
+        marginVertical: 30
     },
-    addressContainer: {
-        padding: 20
-    },
-    address: {
-        color: COLORS.primary,
+    description: {
+        fontSize: 16,
         textAlign: 'center'
-    },
-    mapPreview: {
-        width: '100%',
-        maxWidth: 350,
-        height: 300,
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10
     }
 });
 
 export const placeDetailsScreenNavigationOptions = (props: PlaceDetailsScreenProps) => {
     return {
-        headerTitle: props.route.params.place.title
+        headerTitle: props.route.params.place.name
     } as StackNavigationOptions;
 };
 

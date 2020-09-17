@@ -3,12 +3,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigationOptions } from '@react-navigation/stack/lib/typescript/src/types';
 import { COLORS } from '../constants/colors';
+import { Nullable } from '../models/Nullable';
+import CameraScreen, { cameraScreenNavigationOptions } from '../screens/CameraScreen/CameraScreen';
 import MapScreen, { mapScreenNavigationOptions } from '../screens/MapScreen/MapScreen';
 import NewPlaceScreen, { newPlaceScreenNavigationOptions } from '../screens/NewPlaceScreen/NewPlaceScreen';
 import PlaceDetailsScreen, { placeDetailsScreenNavigationOptions } from '../screens/PlaceDetailsScreen/PlaceDetailsScreen';
 import PlacesListScreen, { placesListScreenNavigationOptions } from '../screens/PlacesListScreen/PlacesListScreen';
 import { Place } from '../models/Place';
 import { Location } from '../models/Location';
+import * as NavigationService from '../services/navigation.service';
 
 const defaultNavOptions: StackNavigationOptions = {
     headerStyle: {
@@ -20,9 +23,10 @@ const defaultNavOptions: StackNavigationOptions = {
 
 export type PlacesNavigatorParams = {
     PlacesList: undefined,
+    Camera: { navigateTo?: 'Map' | 'NewPlace' } | undefined,
     PlaceDetails: { place: Place },
-    NewPlace: { locationFromMap?: Location },
-    Map: { readonly?: boolean, initialLocation?: Location } | undefined
+    NewPlace: undefined,
+    Map: { readonly?: boolean, initialLocation: Nullable<Location> } | undefined
 };
 const PlacesStackNavigator = createStackNavigator<PlacesNavigatorParams>();
 const PlacesNavigator = () => {
@@ -34,9 +38,14 @@ const PlacesNavigator = () => {
                 options={ placesListScreenNavigationOptions }
             />
             <PlacesStackNavigator.Screen
-                name="PlaceDetails"
-                component={ PlaceDetailsScreen }
-                options={ placeDetailsScreenNavigationOptions }
+                name="Camera"
+                component={ CameraScreen }
+                options={ cameraScreenNavigationOptions }
+            />
+            <PlacesStackNavigator.Screen
+                name="Map"
+                component={ MapScreen }
+                options={ mapScreenNavigationOptions }
             />
             <PlacesStackNavigator.Screen
                 name="NewPlace"
@@ -44,9 +53,9 @@ const PlacesNavigator = () => {
                 options={ newPlaceScreenNavigationOptions }
             />
             <PlacesStackNavigator.Screen
-                name="Map"
-                component={ MapScreen }
-                options={ mapScreenNavigationOptions }
+                name="PlaceDetails"
+                component={ PlaceDetailsScreen }
+                options={ placeDetailsScreenNavigationOptions }
             />
         </PlacesStackNavigator.Navigator>
     );
@@ -54,7 +63,7 @@ const PlacesNavigator = () => {
 
 const AppNavigator = () => {
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={ ref => NavigationService.init(ref) }>
             <PlacesNavigator/>
         </NavigationContainer>
     );

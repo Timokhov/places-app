@@ -1,17 +1,11 @@
 import { Action } from 'redux';
 import { Place } from '../../models/Place';
-import { Location } from '../../models/Location';
 
 export enum PlacesActionType {
     FETCH_PLACES = 'FETCH_PLACES',
     FETCH_PLACES_START = 'FETCH_PLACES_START',
     FETCH_PLACES_SUCCESS = 'FETCH_PLACES_SUCCESS',
-    FETCH_PLACES_FAIL = 'FETCH_PLACES_FAIL',
-
-    ADD_PLACE = 'ADD_PLACE',
-    ADD_PLACE_START = 'ADD_PLACE_START',
-    ADD_PLACE_SUCCESS = 'ADD_PLACE_SUCCESS',
-    ADD_PLACE_FAIL = 'ADD_PLACE_FAIL'
+    FETCH_PLACES_FAIL = 'FETCH_PLACES_FAIL'
 }
 
 export interface PlacesAction extends Action<PlacesActionType> {}
@@ -21,20 +15,6 @@ export interface FetchPlacesSuccessAction extends PlacesAction {
 }
 
 export interface FetchPlacesFailAction extends PlacesAction {
-    error: string
-}
-
-export interface AddPlaceAction extends PlacesAction {
-    title: string,
-    imageUri: string,
-    location: Location
-}
-
-export interface AddPlaceSuccessAction extends PlacesAction {
-    place: Place
-}
-
-export interface AddPlaceFailAction extends PlacesAction {
     error: string
 }
 
@@ -60,35 +40,6 @@ export const fetchPlacesSuccess = (places: Place[]): FetchPlacesSuccessAction =>
 export const fetchPlacesFail = (error: string): FetchPlacesFailAction => {
     return {
         type: PlacesActionType.FETCH_PLACES_FAIL,
-        error: error
-    };
-};
-
-export const addPlace = (title: string, imageUri: string, location: Location): AddPlaceAction => {
-    return {
-        type: PlacesActionType.ADD_PLACE,
-        title: title,
-        imageUri: imageUri,
-        location: location
-    };
-};
-
-export const addPlaceStart = (): PlacesAction => {
-    return {
-        type: PlacesActionType.ADD_PLACE_START
-    };
-};
-
-export const addPlaceSuccess = (place: Place): AddPlaceSuccessAction => {
-    return {
-        type: PlacesActionType.ADD_PLACE_SUCCESS,
-        place: place
-    };
-};
-
-export const addPlaceFail = (error: string): AddPlaceFailAction => {
-    return {
-        type: PlacesActionType.ADD_PLACE_FAIL,
         error: error
     };
 };
