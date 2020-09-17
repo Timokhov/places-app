@@ -40,7 +40,7 @@ const PlacesItem = (props: PlacesItemProps) => {
     return (
         <View style={ styles.placeItem }>
             <TouchableNativeFeedback onPress={ () => props.onSelect(props.place) }>
-                <>
+                <View style={ styles.detailsContainer }>
                     <View style={ styles.imageContainer }>
                         <Image style={ styles.image } source={{ uri: props.place.imageUri }}/>
                     </View>
@@ -52,7 +52,7 @@ const PlacesItem = (props: PlacesItemProps) => {
                             { props.place.location.address }
                         </DefaultText>
                     </View>
-                </>
+                </View>
             </TouchableNativeFeedback>
             { removeButton }
         </View>
@@ -66,7 +66,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomColor: COLORS.common,
-        borderBottomWidth: 1,
+        borderBottomWidth: 1
+    },
+    detailsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '85%',
         padding: 15
     },
     imageContainer: {
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
     details: {
         justifyContent: 'center',
         alignItems: 'flex-start',
-        width: '70%',
+        width: '80%',
         paddingHorizontal: 15
     },
     name: {
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     deleteIconContainer: {
-        width: '10%',
+        width: '15%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center'
