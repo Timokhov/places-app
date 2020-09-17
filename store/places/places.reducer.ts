@@ -1,6 +1,8 @@
 import { Place } from '../../models/Place';
 import { TransactionState } from '../../models/TransactionState';
 import {
+    DeletePlaceFailAction, DeletePlaceStartAction,
+    DeletePlaceSuccessAction,
     FetchPlacesFailAction,
     FetchPlacesSuccessAction,
     PlacesAction,
@@ -9,7 +11,8 @@ import {
 
 export interface PlacesState {
     places: Place[],
-    fetchPlacesState: TransactionState
+    fetchPlacesState: TransactionState,
+    deletePlaceStatesMap: { [index: number]: TransactionState }
 }
 
 const initialState: PlacesState = {
@@ -17,7 +20,8 @@ const initialState: PlacesState = {
     fetchPlacesState: {
         inProgress: false,
         error: ''
-    }
+    },
+    deletePlaceStatesMap: {}
 };
 
 const onFetchPlacesStart = (state: PlacesState, action: PlacesAction): PlacesState => {
@@ -52,6 +56,46 @@ const onFetchPlacesFail = (state: PlacesState, action: FetchPlacesFailAction): P
     };
 };
 
+const onDeletePlaceStart = (state: PlacesState, action: DeletePlaceStartAction): PlacesState => {
+    return {
+        ...state,
+        deletePlaceStatesMap: {
+            ...state.deletePlaceStatesMap,
+            [action.place.id]: {
+                inProgress: true,
+                error: ''
+            }
+        }
+    };
+};
+
+const onDeletePlaceSuccess = (state: PlacesState, action: DeletePlaceSuccessAction): PlacesState => {
+    return {
+        ...state,
+        places: state.places.filter(place => place.id !== action.place.id),
+        deletePlaceStatesMap: {
+            ...state.deletePlaceStatesMap,
+            [action.place.id]: {
+                inProgress: false,
+                error: ''
+            }
+        }
+    };
+};
+
+const onDeletePlaceFail = (state: PlacesState, action: DeletePlaceFailAction): PlacesState => {
+    return {
+        ...state,
+        deletePlaceStatesMap: {
+            ...state.deletePlaceStatesMap,
+            [action.place.id]: {
+                inProgress: false,
+                error: action.error
+            }
+        }
+    };
+};
+
 const placesReducer = (state: PlacesState = initialState, action: PlacesAction): PlacesState => {
     switch (action.type) {
         case PlacesActionType.FETCH_PLACES_START:
@@ -60,6 +104,12 @@ const placesReducer = (state: PlacesState = initialState, action: PlacesAction):
             return onFetchPlacesSuccess(state, action as FetchPlacesSuccessAction);
         case PlacesActionType.FETCH_PLACES_FAIL:
             return onFetchPlacesFail(state, action as FetchPlacesFailAction);
+        case PlacesActionType.DELETE_PLACE_START:
+            return onDeletePlaceStart(state, action as DeletePlaceStartAction);
+        case PlacesActionType.DELETE_PLACE_SUCCESS:
+            return onDeletePlaceSuccess(state, action as DeletePlaceSuccessAction);
+        case PlacesActionType.DELETE_PLACE_FAIL:
+            return onDeletePlaceFail(state, action as DeletePlaceFailAction);
         default:
             return state;
     }

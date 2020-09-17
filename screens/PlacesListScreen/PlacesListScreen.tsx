@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import { Action, Dispatch } from 'redux';
 import { RouteProp } from '@react-navigation/native';
-import { FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
+import { Alert, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
 import { TransactionState } from '../../models/TransactionState';
@@ -31,6 +31,9 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     );
     const fetchPlacesState: TransactionState = useSelector(
         (state: RootState) => state.placesState.fetchPlacesState
+    );
+    const deletePlaceStatesMap: { [index: number]: TransactionState } = useSelector(
+        (state: RootState) => state.placesState.deletePlaceStatesMap
     );
     const dispatch: Dispatch<Action> = useDispatch();
 
@@ -69,8 +72,24 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
         props.navigation.navigate('PlaceDetails', { place: place });
     };
 
+    const onPlaceRemove = (place: Place) => {
+        Alert.alert(
+            'Are you sure?',
+            `Do you really want to delete place with name '${place.name}'?`,
+            [
+                { text: 'No', style: 'default' },
+                { text: 'Yes', style: 'destructive', onPress: () => dispatch(PlacesActions.deletePlace(place)) }
+            ]
+        );
+    };
+
     const renderPlace = (itemInfo: ListRenderItemInfo<Place>) => {
-        return <PlacesItem place={ itemInfo.item } onSelect={ onPlaceSelect }/>;
+        const deletePlaceState: TransactionState = deletePlaceStatesMap[itemInfo.item.id];
+        return <PlacesItem place={ itemInfo.item }
+                           onSelect={ onPlaceSelect }
+                           onRemove={ onPlaceRemove }
+                           removeInProgress={ deletePlaceState && deletePlaceState.inProgress }
+        />;
     };
 
     const refreshControl: React.ReactElement = (

@@ -65,3 +65,23 @@ export const insertPlace = (place: Place): Promise<SQLResultSet> => {
         );
     }));
 };
+
+export const deletePlace = (place: Place): Promise<SQLResultSet> => {
+    return new Promise(((resolve, reject) => {
+        db.transaction(
+            (transaction: SQLTransaction) => {
+                transaction.executeSql(
+                    'DELETE FROM places WHERE id = ?;',
+                    [place.id],
+                    (transaction: SQLTransaction, resultSet: SQLResultSet) => {
+                        resolve(resultSet);
+                    },
+                    (transaction: SQLTransaction, error: SQLError) => {
+                        reject(error);
+                        return false;
+                    }
+                );
+            }
+        );
+    }));
+};
