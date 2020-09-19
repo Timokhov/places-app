@@ -34,6 +34,7 @@ function* addPlaceSaga(action: AddPlaceAction) {
             yield put(NewPlaceActions.addPlaceSuccess(place));
             NavigationService.navigate('PlacesList');
         } catch (error) {
+            console.log(error);
             yield put(NewPlaceActions.addPlaceFail('Error while saving place.'));
         }
     } else {

@@ -18,7 +18,7 @@ const App = () => {
     const [isAppInitialized, setAppInitialized] = useState<boolean>(false);
 
     const init = async () => {
-        await [fetchFonts(), DatabaseService.init()];
+         [await fetchFonts(), await DatabaseService.init()];
     };
 
     if (!isAppInitialized) {

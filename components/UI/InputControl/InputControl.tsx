@@ -29,8 +29,7 @@ const InputControl = (props: InputControlProps) => {
                        value={ props.value }
                        onFocus={ () => toggleFocus(true) }
                        onBlur={ () => toggleFocus(false) }
-                       onChangeText={ textChangedHandler }
-            />
+                       onChangeText={ textChangedHandler }/>
         </View>
     );
 };

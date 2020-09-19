@@ -9,7 +9,9 @@ interface DefaultTextProps extends TextProps {
 
 const DefaultText = (props: DefaultTextProps) => {
     return (
-        <Text { ...props } style={{ ...styles.defaultText, ...props.style }}>{ props.children }</Text>
+        <Text { ...props } style={{ ...styles.defaultText, ...props.style }}>
+            { props.children }
+        </Text>
     );
 };
 

@@ -73,7 +73,7 @@ const MapScreen = (props: MapScreenProps) => {
             });
         }
 
-    }, [readonly, location]);
+    }, [readonly, location, dispatch]);
 
     useEffect(() => {
         if (isAddressSearchInProgress) {

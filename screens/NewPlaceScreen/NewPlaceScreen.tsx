@@ -102,26 +102,27 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                     <View style={ styles.descriptionContainer }>
                         <InputControl label="Name"
                                       value={ name }
-                                      onValueChange={ (newValue: string) => dispatch(NewPlaceActions.setName(newValue)) }
+                                      onValueChange={
+                                          (newValue: string) => dispatch(NewPlaceActions.setName(newValue))
+                                      }
                                       keyboardType="default"
                                       autoCapitalize="sentences"
                                       autoCorrect
-                                      returnKeyType="next"
-                        />
+                                      returnKeyType="next"/>
                         <InputControl label="Description"
                                       value={ description }
-                                      onValueChange={ (newValue: string) => dispatch(NewPlaceActions.setDescription(newValue)) }
+                                      onValueChange={
+                                          (newValue: string) => dispatch(NewPlaceActions.setDescription(newValue))
+                                      }
                                       keyboardType="default"
                                       autoCapitalize="sentences"
                                       autoCorrect
-                                      returnKeyType="next"
-                        />
+                                      returnKeyType="next"/>
                     </View>
                     <Button title="Save Place"
                             onPress={ onSave }
                             color={ COLORS.primary }
-                            disabled={ !description || !name }
-                    />
+                            disabled={ !description || !name }/>
                 </ScrollView>
             </KeyboardAvoidingView>
         );

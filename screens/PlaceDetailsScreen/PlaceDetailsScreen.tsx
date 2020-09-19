@@ -37,7 +37,9 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
                 <MapPreview location={ place.location } onPress={ onShowMap }/>
             </View>
             <View style={ styles.descriptionContainer }>
-                <DefaultText style={ styles.description }>{ place.description }</DefaultText>
+                <DefaultText style={ styles.description }>
+                    { place.description }
+                </DefaultText>
             </View>
         </ScrollView>
     );
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
         marginVertical: 30
     },
     description: {
+        fontFamily: 'open-sans-bold',
         fontSize: 16,
         textAlign: 'center'
     }

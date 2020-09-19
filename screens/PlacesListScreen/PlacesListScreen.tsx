@@ -35,7 +35,15 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     const deletePlaceStatesMap: { [index: number]: TransactionState } = useSelector(
         (state: RootState) => state.placesState.deletePlaceStatesMap
     );
+
     const dispatch: Dispatch<Action> = useDispatch();
+    const dispatchFetchPlaces = useCallback(() => {
+        dispatch(PlacesActions.fetchPlaces());
+    }, [dispatch]);
+    const dispatchCreateNewPlace = useCallback(() => {
+        dispatch(NewPlaceActions.createNewPlaceStart());
+        props.navigation.navigate('Camera')
+    }, [dispatch]);
 
     useEffect(() => {
         props.navigation.setOptions({
@@ -44,29 +52,20 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
                     <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                         <Item title='Add Place'
                               iconName='ios-add'
-                              onPress={ onAddNewPlace }
+                              onPress={ dispatchCreateNewPlace }
                         />
                     </HeaderButtons>
                 );
             }
         });
 
-        dispatch(PlacesActions.fetchPlaces());
-        return props.navigation
-            .addListener(
-                'focus',
-                () => dispatch(PlacesActions.fetchPlaces())
-            );
-    }, [dispatch]);
+        dispatchFetchPlaces();
+        return props.navigation.addListener('focus', dispatchFetchPlaces);
+    }, [dispatchFetchPlaces, dispatchCreateNewPlace]);
 
     const onRefresh = () => {
-        dispatch(PlacesActions.fetchPlaces());
+        dispatchFetchPlaces();
     };
-
-    const onAddNewPlace = useCallback(() => {
-        dispatch(NewPlaceActions.createNewPlaceStart());
-        props.navigation.navigate('Camera')
-    }, [dispatch]);
 
     const onPlaceSelect = (place: Place) => {
         props.navigation.navigate('PlaceDetails', { place: place });
@@ -88,8 +87,7 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
         return <PlacesItem place={ itemInfo.item }
                            onSelect={ onPlaceSelect }
                            onRemove={ onPlaceRemove }
-                           removeInProgress={ deletePlaceState && deletePlaceState.inProgress }
-        />;
+                           removeInProgress={ deletePlaceState && deletePlaceState.inProgress }/>;
     };
 
     const refreshControl: React.ReactElement = (
@@ -101,11 +99,12 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     if (fetchPlacesState.inProgress) {
         return <ScreenLoader/>
     } else if (fetchPlacesState.error) {
-        return <Error message="Error while fetching places." onReload={ onRefresh }/>
+        return <Error message="Error while fetching places."
+                      onReload={ onRefresh }/>
     } else if (!places || places.length === 0) {
         return <Error message="No places found."
                       onReload={ onRefresh }
-                      button={{ title: 'Add new place', action: onAddNewPlace }}/>;
+                      button={{ title: 'Add new place', action: dispatchCreateNewPlace }}/>;
     } else {
         return <FlatList data={ places }
                          keyExtractor={ (place: Place) => place.id.toString() }
