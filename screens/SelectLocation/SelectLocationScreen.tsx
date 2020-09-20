@@ -20,16 +20,15 @@ import { Nullable } from '../../models/Nullable';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
 import * as GoogleService from '../../services/google.service';
 
-type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'Map'>;
-type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'Map'>;
+type MapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'SelectLocation'>;
+type MapScreenRouteProp = RouteProp<PlacesNavigatorParams, 'SelectLocation'>;
 type MapScreenProps = {
     navigation: MapScreenStackNavigationProp,
     route: MapScreenRouteProp
 };
 
-const MapScreen = (props: MapScreenProps) => {
+const SelectLocationScreen = (props: MapScreenProps) => {
 
-    const readonly: Nullable<boolean> = props.route.params?.readonly;
     const initialLocation: Nullable<Location> = props.route.params?.initialLocation;
 
     const [location, setLocation] = useState<Location>();
@@ -49,7 +48,7 @@ const MapScreen = (props: MapScreenProps) => {
     }, []);
 
     useEffect(() => {
-        if (!readonly && location) {
+        if (location) {
             props.navigation.setOptions({
                 headerRight: () => {
                     return (
@@ -73,7 +72,7 @@ const MapScreen = (props: MapScreenProps) => {
             });
         }
 
-    }, [readonly, location, dispatch]);
+    }, [location, dispatch]);
 
     useEffect(() => {
         if (isAddressSearchInProgress) {
@@ -125,7 +124,8 @@ const MapScreen = (props: MapScreenProps) => {
     };
 
     const onSelectLocation = async (event: MapEvent) => {
-        if (!readonly && !isGetMyLocationInProgress) {
+        if (!isGetMyLocationInProgress) {
+            setMapRegion(undefined);
             const latitude: number = event.nativeEvent.coordinate.latitude;
             const longitude: number = event.nativeEvent.coordinate.longitude;
             const address: string = await findAddress(latitude, longitude);
@@ -135,7 +135,6 @@ const MapScreen = (props: MapScreenProps) => {
                 address: address
             };
             setLocation(selectedLocation);
-            setMapRegion(undefined);
         }
     };
 
@@ -156,17 +155,13 @@ const MapScreen = (props: MapScreenProps) => {
 
     return (
         <View style={ styles.screen }>
-            {
-                !readonly && (
-                    <View style={ styles.actionContainer }>
-                        {
-                            isGetMyLocationInProgress
-                                ? <ActivityIndicator size="large" color={ COLORS.primary }/>
-                                : <Button title="Get My Location" onPress={ getMyLocation } color={ COLORS.primary }/>
-                        }
-                    </View>
-                )
-            }
+            <View style={ styles.actionContainer }>
+                {
+                    isGetMyLocationInProgress
+                        ? <ActivityIndicator size="large" color={ COLORS.primary }/>
+                        : <Button title="Get My Location" onPress={ getMyLocation } color={ COLORS.primary }/>
+                }
+            </View>
             <MapView style={ styles.map } region={ mapRegion } onPress={ onSelectLocation }>
                 {
                     location && <Marker title={ location.address } coordinate={ location }/>
@@ -199,4 +194,4 @@ export const mapScreenNavigationOptions = (props: MapScreenProps) => {
     } as StackNavigationOptions;
 };
 
-export default MapScreen;
+export default SelectLocationScreen;

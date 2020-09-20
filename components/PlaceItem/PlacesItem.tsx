@@ -45,7 +45,11 @@ const PlacesItem = (props: PlacesItemProps) => {
                         <Image style={ styles.image } source={{ uri: props.place.imageUri }}/>
                     </View>
                     <View style={ styles.details }>
-                        <DefaultText style={ styles.name }>{ props.place.name }</DefaultText>
+                        <DefaultText style={ styles.name }
+                                     numberOfLines={ 1 }
+                                     ellipsizeMode="tail">
+                            { props.place.name }
+                        </DefaultText>
                         <DefaultText style={ styles.address }
                                      numberOfLines={ 2 }
                                      ellipsizeMode="tail">

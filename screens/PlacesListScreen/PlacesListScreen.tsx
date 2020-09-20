@@ -52,8 +52,7 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
                     <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                         <Item title='Add Place'
                               iconName='ios-add'
-                              onPress={ dispatchCreateNewPlace }
-                        />
+                              onPress={ dispatchCreateNewPlace }/>
                     </HeaderButtons>
                 );
             }
@@ -115,7 +114,16 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
 
 export const placesListScreenNavigationOptions = (props: PlacesListScreenProps) => {
     return {
-        headerTitle: 'All Places'
+        headerTitle: 'All Places',
+        headerLeft: () => {
+            return (
+                <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
+                    <Item title='Places Map'
+                          iconName='ios-map'
+                          onPress={ () => props.navigation.navigate('PlacesMap') }/>
+                </HeaderButtons>
+            );
+        }
     } as StackNavigationOptions;
 };
 

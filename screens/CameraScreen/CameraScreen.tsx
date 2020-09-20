@@ -41,7 +41,7 @@ const CameraScreen = (props: CameraScreenProps) => {
                     if (props.route.params?.navigateTo) {
                         props.navigation.navigate(props.route.params.navigateTo);
                     } else {
-                        props.navigation.navigate('Map');
+                        props.navigation.navigate('SelectLocation');
                     }
                 } else {
                     props.navigation.goBack();

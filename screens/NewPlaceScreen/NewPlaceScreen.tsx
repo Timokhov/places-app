@@ -71,7 +71,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const onChangeLocation = () => {
         Keyboard.dismiss();
-        props.navigation.push('Map', { readonly: false, initialLocation: location });
+        props.navigation.push('SelectLocation', { initialLocation: location });
     };
 
     const onSave = () => {

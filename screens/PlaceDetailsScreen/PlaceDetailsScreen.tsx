@@ -25,7 +25,7 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
     const place: Place = props.route.params.place;
 
     const onShowMap = () => {
-        props.navigation.navigate('Map', { initialLocation: place.location, readonly: true });
+        props.navigation.navigate('PlacesMap', { place: place });
     };
 
     return (
