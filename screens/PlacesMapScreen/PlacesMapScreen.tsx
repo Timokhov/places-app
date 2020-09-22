@@ -41,7 +41,7 @@ const PlacesMapScreen = (props: PlacesMapScreenProps) => {
 
     const onMarkerPress = (place: Place) => {
         props.navigation.navigate('PlaceDetails', { place: place });
-    }
+    };
 
     return (
         <View style={ styles.screen }>

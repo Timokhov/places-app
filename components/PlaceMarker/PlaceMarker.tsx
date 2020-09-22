@@ -1,7 +1,6 @@
 import React from 'react';
 import { Place } from '../../models/Place';
 import { Image, View, StyleSheet } from 'react-native';
-import DefaultText from '../UI/DefaultText/DefaultText';
 import { Marker } from "react-native-maps";
 import { COLORS } from '../../constants/colors';
 
@@ -13,36 +12,44 @@ interface PlaceMarkerProps {
 const PlaceMarker = (props: PlaceMarkerProps) => {
     return (
         <Marker key={ props.place.id }
+                style={ styles.placeMarker }
                 coordinate={ props.place.location }
                 onPress={ () => props.onPress && props.onPress(props.place) }>
             <View style={ styles.imageContainer }>
-                <Image style={ styles.image } source={{ uri: props.place.imageUri }}/>
-                <View style={ styles.nameContainer }>
-                    <DefaultText style={ styles.name }
-                                 numberOfLines={ 2 }
-                                 ellipsizeMode="tail">
-                        { props.place.name }
-                    </DefaultText>
+                <View style={ styles.drop }>
+                    <Image style={ styles.image } source={{ uri: props.place.imageUri }}/>
                 </View>
             </View>
-            <View style={ styles.picker }/>
         </Marker>
     );
 };
 
 const styles = StyleSheet.create({
+    placeMarker: {
+        width: 40,
+        height: 60,
+    },
     imageContainer: {
-        flexDirection: 'row',
-        width: 80,
-        height: 30,
-        borderRadius: 8,
-        backgroundColor: COLORS.second,
-        overflow: 'hidden'
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1
+    },
+    drop: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 40,
+        height: 40,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        backgroundColor: COLORS.primary,
+        transform: [{ rotateZ: '45deg' }]
     },
     image: {
-        width: 30,
-        height: 30,
-        borderRadius: 8
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        transform: [{ rotateZ: '-45deg' }]
     },
     nameContainer: {
         width: 50,
@@ -60,12 +67,12 @@ const styles = StyleSheet.create({
         height: 0,
         backgroundColor: 'transparent',
         borderStyle: 'solid',
-        borderLeftWidth: 5,
-        borderRightWidth: 5,
-        borderTopWidth: 10,
+        borderLeftWidth: 4,
+        borderRightWidth: 4,
+        borderTopWidth: 8,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderTopColor: COLORS.second,
+        borderTopColor: COLORS.primary,
         alignSelf: 'center'
     }
 });
