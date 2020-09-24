@@ -1,4 +1,4 @@
-export interface TransactionState {
+export interface ProgressionState {
     inProgress: boolean,
     error: string
 }

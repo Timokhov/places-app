@@ -3,9 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigationOptions } from '@react-navigation/stack/lib/typescript/src/types';
 import { COLORS } from '../constants/colors';
-import { Nullable } from '../models/Nullable';
 import CameraScreen, { cameraScreenNavigationOptions } from '../screens/CameraScreen/CameraScreen';
-import SelectLocationScreen, { mapScreenNavigationOptions } from '../screens/SelectLocation/SelectLocationScreen';
+import PickLocationScreen, { pickLocationScreenNavigationOptions } from '../screens/PickLocation/PickLocationScreen';
 import NewPlaceScreen, { newPlaceScreenNavigationOptions } from '../screens/NewPlaceScreen/NewPlaceScreen';
 import PlaceDetailsScreen, { placeDetailsScreenNavigationOptions } from '../screens/PlaceDetailsScreen/PlaceDetailsScreen';
 import PlacesListScreen, { placesListScreenNavigationOptions } from '../screens/PlacesListScreen/PlacesListScreen';
@@ -13,6 +12,8 @@ import { Place } from '../models/Place';
 import { Location } from '../models/Location';
 import * as NavigationService from '../services/navigation.service';
 import PlacesMapScreen, { placesMapScreenNavigationOptions } from '../screens/PlacesMapScreen/PlacesMapScreen';
+import { PlacesNavigatePath } from './navigation.utils';
+import { Nullable } from '../models/Nullable';
 
 const defaultNavOptions: StackNavigationOptions = {
     headerStyle: {
@@ -24,11 +25,11 @@ const defaultNavOptions: StackNavigationOptions = {
 
 export type PlacesNavigatorParams = {
     PlacesList: undefined,
-    PlacesMap: { place?: Place } | undefined,
-    Camera: { navigateTo?: 'SelectLocation' | 'NewPlace' } | undefined,
+    PlacesMap: { place: Nullable<Place> } | undefined,
+    Camera: { navigateTo: Nullable<PlacesNavigatePath> } | undefined,
     PlaceDetails: { place: Place },
     NewPlace: undefined,
-    SelectLocation: { initialLocation: Nullable<Location> } | undefined
+    PickLocation: { initialLocation: Nullable<Location> } | undefined
 };
 const PlacesStackNavigator = createStackNavigator<PlacesNavigatorParams>();
 const PlacesNavigator = () => {
@@ -50,9 +51,9 @@ const PlacesNavigator = () => {
                 options={ cameraScreenNavigationOptions }
             />
             <PlacesStackNavigator.Screen
-                name="SelectLocation"
-                component={ SelectLocationScreen }
-                options={ mapScreenNavigationOptions }
+                name="PickLocation"
+                component={ PickLocationScreen }
+                options={ pickLocationScreenNavigationOptions }
             />
             <PlacesStackNavigator.Screen
                 name="NewPlace"

@@ -4,15 +4,15 @@ import { RouteProp } from '@react-navigation/native';
 import { Action, Dispatch } from 'redux';
 import * as ExpoPermissions from 'expo-permissions';
 import { PermissionResponse, PermissionStatus } from 'expo-permissions/src/Permissions.types';
-import { Alert, View, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { Camera, CameraType } from 'expo-camera';
 import CameraActions from '../../components/CameraActions/CameraActions';
 import { FlashMode } from '../../models/FlashMode';
 import { Nullable } from '../../models/Nullable';
-import { CameraCapturedPicture } from 'expo-camera/src/Camera.types';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 type CameraScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'Camera'>;
 type CameraScreenRouteProp = RouteProp<PlacesNavigatorParams, 'Camera'>;
@@ -30,12 +30,19 @@ const CameraScreen = (props: CameraScreenProps) => {
     let cameraRef: Nullable<Camera>;
 
     useEffect(() => {
-        return props.navigation.addListener('focus', verifyPermissions);
+        const unsubscribeFromFocus = props.navigation.addListener('focus', verifyPermissions);
+        const unsubscribeFromBeforeRemove = props.navigation.addListener('beforeRemove', () => {
+            dispatch(NewPlaceActions.stopCapturePhoto());
+        });
+        return () => {
+            unsubscribeFromFocus();
+            unsubscribeFromBeforeRemove();
+        }
     }, []);
 
     const verifyPermissions = async () => {
         try {
-            const result: PermissionResponse = await ExpoPermissions.askAsync(ExpoPermissions.CAMERA, ExpoPermissions.CAMERA_ROLL);
+            const result: PermissionResponse = await ExpoPermissions.askAsync(ExpoPermissions.CAMERA);
             if (result.status !== PermissionStatus.GRANTED) {
                 showPermissionsError();
             }
@@ -55,17 +62,12 @@ const CameraScreen = (props: CameraScreenProps) => {
         );
     };
 
-    const onCapturePhoto = async () => {
+    const onCapturePhoto = () => {
         if (cameraRef) {
-            const photo: CameraCapturedPicture = await cameraRef.takePictureAsync();
-            if (photo) {
-                dispatch(NewPlaceActions.setImageUri(photo.uri));
-                if (props.route.params?.navigateTo) {
-                    props.navigation.navigate(props.route.params.navigateTo);
-                } else {
-                    props.navigation.navigate('SelectLocation');
-                }
-            }
+            const navigateTo: PlacesNavigatePath = props.route.params?.navigateTo
+                ? props.route.params?.navigateTo
+                : PlacesNavigatePath.PICK_LOCATION;
+            dispatch(NewPlaceActions.capturePhoto(cameraRef, navigateTo));
         }
     };
 

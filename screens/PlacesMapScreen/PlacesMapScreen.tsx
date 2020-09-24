@@ -10,6 +10,7 @@ import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/s
 import PlaceMarker from '../../components/PlaceMarker/PlaceMarker';
 import { MAP_DELTA } from '../../constants/map';
 import { Nullable } from '../../models/Nullable';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 
 type PlacesMapScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlacesMap'>;
@@ -40,7 +41,7 @@ const PlacesMapScreen = (props: PlacesMapScreenProps) => {
     }, []);
 
     const onMarkerPress = (place: Place) => {
-        props.navigation.navigate('PlaceDetails', { place: place });
+        props.navigation.navigate(PlacesNavigatePath.PLACE_DETAILS, { place: place });
     };
 
     return (

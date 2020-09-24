@@ -1,11 +1,16 @@
 import { Action } from 'redux';
 import { Location } from '../../models/Location';
 import { Place } from '../../models/Place';
+import { Camera } from 'expo-camera';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 export enum NewPlaceActionType {
     CREATE_NEW_PLACE_START = 'CREATE_NEW_PLACE_START',
+
+    CAPTURE_PHOTO = 'CAPTURE_PHOTO',
+    STOP_CAPTURE_PHOTO = 'STOP_CAPTURE_PHOTO',
     SET_IMAGE_URI = 'SET_IMAGE_URI',
-    SET_LOCATION = 'SET_LOCATION',
+    SET_LOCATION = 'SET_LOCATION_TO_NEW_PLACE',
     SET_NAME = 'SET_NAME',
     SET_DESCRIPTION = 'SET_DESCRIPTION',
 
@@ -16,6 +21,11 @@ export enum NewPlaceActionType {
 }
 
 export interface NewPlaceAction extends Action<NewPlaceActionType> {}
+
+export interface CapturePhotoAction extends NewPlaceAction {
+    cameraRef: Camera,
+    navigateTo: PlacesNavigatePath
+}
 
 export interface SetImageUriAction extends NewPlaceAction {
     imageUri: string
@@ -51,6 +61,20 @@ export interface AddPlaceFailAction extends NewPlaceAction {
 export const createNewPlaceStart = (): NewPlaceAction => {
     return {
         type: NewPlaceActionType.CREATE_NEW_PLACE_START
+    };
+};
+
+export const capturePhoto = (cameraRef: Camera, navigateTo: PlacesNavigatePath ): CapturePhotoAction => {
+    return {
+        type: NewPlaceActionType.CAPTURE_PHOTO,
+        cameraRef: cameraRef,
+        navigateTo: navigateTo
+    };
+};
+
+export const stopCapturePhoto = (): NewPlaceAction => {
+    return {
+        type: NewPlaceActionType.STOP_CAPTURE_PHOTO
     };
 };
 

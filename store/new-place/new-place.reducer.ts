@@ -1,6 +1,6 @@
 import { Location } from '../../models/Location';
 import { Nullable } from '../../models/Nullable';
-import { TransactionState } from '../../models/TransactionState';
+import { ProgressionState } from '../../models/ProgressionState';
 import {
     AddPlaceFailAction,
     AddPlaceSuccessAction,
@@ -17,7 +17,7 @@ export interface NewPlaceState {
     location: Nullable<Location>,
     name: string,
     description: string,
-    addPlaceState: TransactionState
+    addPlaceState: ProgressionState
 }
 
 const initialState: NewPlaceState = {

@@ -5,7 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { Alert, FlatList, ListRenderItemInfo, RefreshControl } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton/CustomHeaderButton';
-import { TransactionState } from '../../models/TransactionState';
+import { ProgressionState } from '../../models/ProgressionState';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { Place } from '../../models/Place';
@@ -16,6 +16,7 @@ import Error from '../../components/UI/Error/Error';
 import { COLORS } from '../../constants/colors';
 import * as PlacesActions from '../../store/places/places.actions';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 type PlacesListScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlacesList'>;
 type PlacesListScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlacesList'>;
@@ -29,10 +30,10 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     const places: Place[] = useSelector(
         (state: RootState) => state.placesState.places
     );
-    const fetchPlacesState: TransactionState = useSelector(
+    const fetchPlacesState: ProgressionState = useSelector(
         (state: RootState) => state.placesState.fetchPlacesState
     );
-    const deletePlaceStatesMap: { [index: number]: TransactionState } = useSelector(
+    const deletePlaceStatesMap: { [index: number]: ProgressionState } = useSelector(
         (state: RootState) => state.placesState.deletePlaceStatesMap
     );
 
@@ -42,7 +43,7 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     }, [dispatch]);
     const dispatchCreateNewPlace = useCallback(() => {
         dispatch(NewPlaceActions.createNewPlaceStart());
-        props.navigation.navigate('Camera')
+        props.navigation.navigate(PlacesNavigatePath.CAMERA)
     }, [dispatch]);
 
     useEffect(() => {
@@ -67,7 +68,7 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     };
 
     const onPlaceSelect = (place: Place) => {
-        props.navigation.navigate('PlaceDetails', { place: place });
+        props.navigation.navigate(PlacesNavigatePath.PLACE_DETAILS, { place: place });
     };
 
     const onPlaceRemove = (place: Place) => {
@@ -82,7 +83,7 @@ const PlacesListScreen = (props: PlacesListScreenProps) => {
     };
 
     const renderPlace = (itemInfo: ListRenderItemInfo<Place>) => {
-        const deletePlaceState: TransactionState = deletePlaceStatesMap[itemInfo.item.id];
+        const deletePlaceState: ProgressionState = deletePlaceStatesMap[itemInfo.item.id];
         return <PlacesItem place={ itemInfo.item }
                            onSelect={ onPlaceSelect }
                            onRemove={ onPlaceRemove }
@@ -120,7 +121,7 @@ export const placesListScreenNavigationOptions = (props: PlacesListScreenProps) 
                 <HeaderButtons HeaderButtonComponent={ CustomHeaderButton }>
                     <Item title='Places Map'
                           iconName='ios-map'
-                          onPress={ () => props.navigation.navigate('PlacesMap') }/>
+                          onPress={ () => props.navigation.navigate(PlacesNavigatePath.PLACES_MAP) }/>
                 </HeaderButtons>
             );
         }

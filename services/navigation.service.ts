@@ -1,5 +1,6 @@
 import { NavigationContainerRef } from '@react-navigation/native';
 import { Nullable } from '../models/Nullable';
+import { PlacesNavigatePath } from '../navigation/navigation.utils';
 
 let navigator: Nullable<NavigationContainerRef> = undefined;
 
@@ -9,8 +10,8 @@ export const init = (nav: Nullable<NavigationContainerRef>) => {
     }
 };
 
-export const navigate = (rout: string, params?: any) => {
+export const navigate = (path: PlacesNavigatePath, params?: any) => {
     if (navigator) {
-        navigator.navigate(rout, params);
+        navigator.navigate(path, params);
     }
 };

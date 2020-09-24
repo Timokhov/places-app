@@ -17,13 +17,14 @@ import MapPreview from '../../components/MapPreview/MapPreview';
 import InputControl from '../../components/UI/InputControl/InputControl';
 import ScreenLoader from '../../components/UI/ScreenLoader/ScreenLoader';
 import { COLORS } from '../../constants/colors';
-import { useTransactionStateObserver } from '../../hooks/transaction-state-observer.hook';
+import { useProgressionStateObserver } from '../../hooks/transaction-state-observer.hook';
 import { Nullable } from '../../models/Nullable';
-import { TransactionState } from '../../models/TransactionState';
+import { ProgressionState } from '../../models/ProgressionState';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { Location } from '../../models/Location';
 import { RootState } from '../../store/store';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -46,7 +47,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
     const description: string = useSelector(
         (state: RootState) => state.newPlaceState.description
     );
-    const addPlaceState: TransactionState = useSelector(
+    const addPlaceState: ProgressionState = useSelector(
         (state: RootState) => state.newPlaceState.addPlaceState
     );
 
@@ -54,7 +55,7 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const dispatch: Dispatch<Action> = useDispatch();
 
-    useTransactionStateObserver(
+    useProgressionStateObserver(
         addPlaceState,
         () => setShowLoader(true),
         () => setShowLoader(false),
@@ -66,12 +67,12 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
 
     const onChangeImage = () => {
         Keyboard.dismiss();
-        props.navigation.push('Camera', { navigateTo: 'NewPlace' });
+        props.navigation.push(PlacesNavigatePath.CAMERA, { navigateTo: PlacesNavigatePath.NEW_PLACE });
     };
 
     const onChangeLocation = () => {
         Keyboard.dismiss();
-        props.navigation.push('SelectLocation', { initialLocation: location });
+        props.navigation.push(PlacesNavigatePath.PICK_LOCATION, { initialLocation: location });
     };
 
     const onSave = () => {

@@ -12,6 +12,7 @@ import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import MapPreview from '../../components/MapPreview/MapPreview';
 import { Place } from '../../models/Place';
 import { COLORS } from '../../constants/colors';
+import { PlacesNavigatePath } from '../../navigation/navigation.utils';
 
 type PlaceDetailsScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlaceDetails'>;
 type PlaceDetailsScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlaceDetails'>;
@@ -25,7 +26,7 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
     const place: Place = props.route.params.place;
 
     const onShowMap = () => {
-        props.navigation.navigate('PlacesMap', { place: place });
+        props.navigation.push(PlacesNavigatePath.PLACES_MAP, { place: place });
     };
 
     return (

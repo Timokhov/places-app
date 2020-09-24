@@ -1,5 +1,5 @@
 import { Place } from '../../models/Place';
-import { TransactionState } from '../../models/TransactionState';
+import { ProgressionState } from '../../models/ProgressionState';
 import {
     DeletePlaceFailAction, DeletePlaceStartAction,
     DeletePlaceSuccessAction,
@@ -11,8 +11,8 @@ import {
 
 export interface PlacesState {
     places: Place[],
-    fetchPlacesState: TransactionState,
-    deletePlaceStatesMap: { [index: number]: TransactionState }
+    fetchPlacesState: ProgressionState,
+    deletePlaceStatesMap: { [index: number]: ProgressionState }
 }
 
 const initialState: PlacesState = {
