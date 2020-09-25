@@ -1,4 +1,4 @@
-import { put, takeEvery, race, call, take } from 'redux-saga/effects';
+import { put, takeEvery, race, call, take, delay } from 'redux-saga/effects';
 import { Location } from '../../models/Location';
 import { PermissionResponse, PermissionStatus } from 'expo-permissions/src/Permissions.types';
 import * as ExpoPermissions from 'expo-permissions';
@@ -41,7 +41,10 @@ function* getMyLocationSaga() {
     try {
         const result: PermissionResponse = yield ExpoPermissions.askAsync(ExpoPermissions.LOCATION);
         if (result.status === PermissionStatus.GRANTED) {
-            const result: LocationData = yield ExpoLocation.getCurrentPositionAsync({ timeout: 5000 });
+            const { result }: { result: LocationData } = yield race({
+                result: call(ExpoLocation.getCurrentPositionAsync),
+                timeout: delay(5000)
+            });
             const address: string = yield getAddress(result.coords.latitude, result.coords.longitude);
             const userLocation: Location = {
                 latitude: result.coords.latitude,

@@ -49,7 +49,7 @@ const onGetMyLocationStart = (state: PickLocationState, action: PickLocationActi
 const onGetMyLocationFail = (state: PickLocationState, action: GetMyLocationFailAction): PickLocationState => {
     return {
         ...state,
-        selectLocationState: {
+        getMyLocationState: {
             inProgress: false,
             error: action.error
         }
