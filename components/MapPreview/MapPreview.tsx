@@ -16,8 +16,7 @@ const MapPreview = (props: MapPreviewProps) => {
     const mapPreviewUrl: string = `https://maps.googleapis.com/maps/api/staticmap?center=${props.location?.latitude},${props.location?.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:A%7C${props.location?.latitude},${props.location?.longitude}&key=${ENV.googleApiKey}`;
 
     return (
-        <TouchableNativeFeedback style={ styles.mapPreview }
-                                 onPress={ () => props.onPress && props.onPress() }
+        <TouchableNativeFeedback onPress={ props.onPress }
                                  useForeground>
             <View style={ styles.mapPreview }>
                 {

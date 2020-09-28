@@ -4,15 +4,14 @@ import { RouteProp } from '@react-navigation/native';
 import {
     View,
     StyleSheet,
-    ScrollView,
-    Image
+    ScrollView
 } from 'react-native';
 import DefaultText from '../../components/UI/DefaultText/DefaultText';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import MapPreview from '../../components/MapPreview/MapPreview';
 import { Place } from '../../models/Place';
-import { COLORS } from '../../constants/colors';
 import { PlacesNavigatePath } from '../../navigation/navigation.utils';
+import PhotoPreview from '../../components/PhotoPreview/PhotoPreview';
 
 type PlaceDetailsScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'PlaceDetails'>;
 type PlaceDetailsScreenRouteProp = RouteProp<PlacesNavigatorParams, 'PlaceDetails'>;
@@ -29,10 +28,14 @@ const PlaceDetailsScreen = (props: PlaceDetailsScreenProps) => {
         props.navigation.push(PlacesNavigatePath.PLACES_MAP, { place: place });
     };
 
+    const onShowFullPhoto = () => {
+        props.navigation.navigate(PlacesNavigatePath.PHOTO_MODAL, { uri: place.imageUri })
+    }
+
     return (
         <ScrollView contentContainerStyle={ styles.screen }>
-            <View style={ styles.imageContainer }>
-                <Image style={ styles.image } source={{ uri: place.imageUri }}/>
+            <View style={ styles.photoContainer }>
+                <PhotoPreview uri={ place.imageUri } onPress={ onShowFullPhoto }/>
             </View>
             <View style={ styles.locationContainer }>
                 <MapPreview location={ place.location } onPress={ onShowMap }/>
@@ -52,15 +55,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start'
     },
-    imageContainer: {
-        height: 200,
+    photoContainer: {
         width: '100%',
-        backgroundColor: COLORS.common,
-        marginBottom: 10
-    },
-    image: {
-        width: '100%',
-        height: '100%'
+        height: 300
     },
     locationContainer: {
         marginVertical: 10,

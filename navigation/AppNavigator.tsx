@@ -14,6 +14,7 @@ import * as NavigationService from '../services/navigation.service';
 import PlacesMapScreen, { placesMapScreenNavigationOptions } from '../screens/PlacesMapScreen/PlacesMapScreen';
 import { PlacesNavigatePath } from './navigation.utils';
 import { Nullable } from '../models/Nullable';
+import PhotoModal, { photoModalNavigationOptions } from '../screens/PhotoModal/PhotoModal';
 
 const defaultNavOptions: StackNavigationOptions = {
     headerStyle: {
@@ -29,7 +30,8 @@ export type PlacesNavigatorParams = {
     Camera: { navigateTo: Nullable<PlacesNavigatePath> } | undefined,
     PlaceDetails: { place: Place },
     NewPlace: undefined,
-    PickLocation: { initialLocation: Nullable<Location> } | undefined
+    PickLocation: { initialLocation: Nullable<Location> } | undefined,
+    PhotoModal: { uri: string }
 };
 const PlacesStackNavigator = createStackNavigator<PlacesNavigatorParams>();
 const PlacesNavigator = () => {
@@ -69,10 +71,31 @@ const PlacesNavigator = () => {
     );
 };
 
+export type RootNavigatorParams = {
+    Places: undefined,
+    PhotoModal: { uri: string }
+};
+const RootStackNavigator = createStackNavigator<RootNavigatorParams>();
+const RootNavigator = () => {
+    return (
+        <RootStackNavigator.Navigator mode="modal" headerMode="none">
+            <RootStackNavigator.Screen
+                name="Places"
+                component={ PlacesNavigator }
+            />
+            <RootStackNavigator.Screen
+                name="PhotoModal"
+                component={ PhotoModal }
+                options={ photoModalNavigationOptions }
+            />
+        </RootStackNavigator.Navigator>
+    );
+};
+
 const AppNavigator = () => {
     return (
         <NavigationContainer ref={ ref => NavigationService.init(ref) }>
-            <PlacesNavigator/>
+            <RootNavigator/>
         </NavigationContainer>
     );
 };

@@ -4,5 +4,6 @@ export enum PlacesNavigatePath {
     CAMERA = 'Camera',
     PLACE_DETAILS = 'PlaceDetails',
     NEW_PLACE = 'NewPlace',
-    PICK_LOCATION = 'PickLocation'
+    PICK_LOCATION = 'PickLocation',
+    PHOTO_MODAL = 'PhotoModal'
 }

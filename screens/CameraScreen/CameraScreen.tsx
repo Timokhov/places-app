@@ -8,7 +8,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { PlacesNavigatorParams } from '../../navigation/AppNavigator';
 import { Camera, CameraType } from 'expo-camera';
-import CameraActions from '../../components/CameraActions/CameraActions';
+import CameraToolbar from '../../components/CameraToolbar/CameraToolbar';
 import { FlashMode } from '../../models/FlashMode';
 import { Nullable } from '../../models/Nullable';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
@@ -78,7 +78,7 @@ const CameraScreen = (props: CameraScreenProps) => {
                     flashMode={ flashMode }
                     type={ cameraType }
                     ratio={"16:9"}>
-                <CameraActions flashMode={ flashMode }
+                <CameraToolbar flashMode={ flashMode }
                                onSwitchFlashMode={ setFlashMode }
                                onCapturePhoto={ onCapturePhoto }
                                cameraType={ cameraType }

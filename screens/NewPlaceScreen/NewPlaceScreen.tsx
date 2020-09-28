@@ -4,12 +4,11 @@ import { RouteProp } from '@react-navigation/native';
 import {
     View,
     ScrollView,
-    Image,
     StyleSheet,
     Button,
     KeyboardAvoidingView,
     Alert,
-    TouchableNativeFeedback, Keyboard
+    Keyboard
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action, Dispatch } from 'redux';
@@ -25,6 +24,8 @@ import { Location } from '../../models/Location';
 import { RootState } from '../../store/store';
 import * as NewPlaceActions from '../../store/new-place/new-place.actions';
 import { PlacesNavigatePath } from '../../navigation/navigation.utils';
+import PhotoPreview from '../../components/PhotoPreview/PhotoPreview';
+import CameraAction from '../../components/CameraAction/CameraAction';
 
 type NewPlaceScreenStackNavigationProp = StackNavigationProp<PlacesNavigatorParams, 'NewPlace'>;
 type NewPlaceScreenRouteProp = RouteProp<PlacesNavigatorParams, 'NewPlace'>;
@@ -65,7 +66,12 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
         }
     );
 
-    const onChangeImage = () => {
+    const onShowFullPhoto = () => {
+        Keyboard.dismiss();
+        props.navigation.navigate(PlacesNavigatePath.PHOTO_MODAL, { uri: imageUri })
+    }
+
+    const onChangePhoto = () => {
         Keyboard.dismiss();
         props.navigation.push(PlacesNavigatePath.CAMERA, { navigateTo: PlacesNavigatePath.NEW_PLACE });
     };
@@ -90,11 +96,12 @@ const NewPlaceScreen = (props: NewPlaceScreenProps) => {
                 <ScrollView contentContainerStyle={ styles.screen } keyboardShouldPersistTaps="handled">
                     {
                         !!imageUri && (
-                            <TouchableNativeFeedback onPress={ onChangeImage } useForeground>
-                                <View style={ styles.imageContainer }>
-                                    <Image style={ styles.image } source={{ uri: imageUri }}/>
+                            <View style={ styles.photoContainer }>
+                                <PhotoPreview uri={ imageUri } onPress={ onShowFullPhoto }/>
+                                <View style={ styles.changePhotoButtonContainer }>
+                                    <CameraAction iconName="ios-camera" onPress={ onChangePhoto }/>
                                 </View>
-                            </TouchableNativeFeedback>
+                            </View>
                         )
                     }
                     <View style={ styles.locationContainer }>
@@ -137,14 +144,13 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         paddingBottom: 10
     },
-    imageContainer: {
-        height: 200,
+    photoContainer: {
         width: '100%',
-        backgroundColor: COLORS.common,
-        marginBottom: 10
+        height: 200
     },
-    image: {
-        flex: 1
+    changePhotoButtonContainer: {
+        position: 'absolute',
+        bottom: 0
     },
     locationContainer: {
         marginVertical: 10,
